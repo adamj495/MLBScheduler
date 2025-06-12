@@ -1,7 +1,10 @@
-
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
+import os
+from google.oauth2 import service_account
+from pandas_gbq import to_gbq
 
 # MLB team IDs and names
 teams = {
@@ -51,6 +54,17 @@ def process_data(df):
     df.dropna(subset=["x", "y"], inplace=True)
     return df
 
+def upload_to_bigquery(df):
+    print("Uploading to BigQuery...")
+    project_id = "mlbstats-462519"
+    table_id = "mlb_data.player_hit_locations"
+
+    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT_KEY"])
+    credentials = service_account.Credentials.from_service_account_info(service_account_info)
+
+    to_gbq(df, table_id, project_id=project_id, if_exists="replace", credentials=credentials)
+    print(f" Uploaded {len(df)} rows to BigQuery table: {table_id}")
+
 def main():
     season = 2024
     df_raw = fetch_all_hits(teams, season)
@@ -59,9 +73,7 @@ def main():
     df = process_data(df_raw)
     print(f"Processed records with coordinates: {len(df)}")
 
-    # Save to CSV (GitHub Actions can upload or sync elsewhere)
-    df.to_csv("mlb_hits_2024.csv", index=False)
-    print("Data saved to mlb_hits_2024.csv")
+    upload_to_bigquery(df)
 
 if __name__ == "__main__":
     main()
