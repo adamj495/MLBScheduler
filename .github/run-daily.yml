@@ -1,0 +1,25 @@
+name: Run MLB Hits Fetcher Daily
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # Runs daily at 11:00 AM UTC
+  workflow_dispatch:      # Allows manual runs from the GitHub UI
+
+jobs:
+  run-fetcher:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the MLB hits fetcher
+        run: python mlb_hits_fetcher.py
