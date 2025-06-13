@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json
 import os
-from google.oauth2 import service_account
+# from google.oauth2 import service_account
 from pandas_gbq import to_gbq
 
 # MLB team IDs and names
