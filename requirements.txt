@@ -1,3 +1,6 @@
 requests
 pandas
 matplotlib
+google-auth
+pandas-gbq
+python-dotenv
