@@ -9,6 +9,9 @@ def upload_to_bigquery(df: pd.DataFrame):
     table_id = os.getenv("BQ_TABLE_ID")
     key_file = "gcp_key.json"  # written by GitHub secret in workflow
 
+    with open(key_file, "r") as f:
+        print(" gcp_key.json contents:\n" + f.read())
+
     credentials = service_account.Credentials.from_service_account_file(key_file)
 
     logging.info(f"Uploading {len(df)} rows to BigQuery: {table_id}")
