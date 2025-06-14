@@ -1,0 +1,31 @@
+name: Fetch and Upload MLB Data
+
+on:
+  schedule:
+    - cron: '30 02 * * *'  # Runs daily at 10:10 PM UTC
+
+jobs:
+  fetch-upload:
+    runs-on: ubuntu-latest
+
+    env:
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      BQ_TABLE_ID: ${{ secrets.BQ_TABLE_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write GCP credentials from secret
+        run: echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" > gcp_key.json
+
+      - name: Run data fetch + upload
+        run: python main.py
