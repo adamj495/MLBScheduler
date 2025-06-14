@@ -40,7 +40,7 @@ def fetch_all_hits(teams_dict, season_year):
             print(f"Error fetching data for {team_name}: {e}")
     return pd.DataFrame(all_hits)
 
-def process_data(df):
+def process_hit_data(df):
     df = df[df["coordinates"].notna()].copy()
     df["x"] = df["coordinates"].apply(lambda c: c.get("coordX") if isinstance(c, dict) else None)
     df["y"] = df["coordinates"].apply(lambda c: c.get("coordY") if isinstance(c, dict) else None)
